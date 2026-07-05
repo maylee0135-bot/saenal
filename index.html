@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>여름 들살이 · 일정표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+  :root{
+    --green:#D3EC9E;
+    --green-deep:#8FC24A;
+    --green-ink:#3E6B1F;
+    --ink:#1C1C1C;
+    --ink-soft:#767676;
+    --card:#FFFFFF;
+    --line:#1C1C1C;
+    --dash: rgba(28,28,28,0.22);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--green);
+    color:var(--ink);
+    font-family:"Pretendard Variable","Pretendard",-apple-system,"Malgun Gothic",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding-bottom:50px;}
+
+  /* ---------- Header ---------- */
+  header{
+    background:var(--green);
+    padding:30px 22px 22px;
+    position:relative;
+  }
+  .back{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    margin-bottom:18px;
+    color:var(--ink);
+  }
+  .dday{
+    position:absolute;
+    top:30px; right:22px;
+    text-align:right;
+  }
+  .dday .pill{
+    display:inline-block;
+    background:var(--ink);
+    color:var(--green);
+    font-family:"Black Han Sans", sans-serif;
+    font-size:13px;
+    letter-spacing:.03em;
+    padding:6px 14px;
+    border-radius:20px;
+  }
+  .dday .range{
+    margin-top:6px;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.4;
+  }
+  header h1{
+    font-family:"Black Han Sans", sans-serif;
+    font-size:38px;
+    line-height:1.15;
+    margin:0;
+    color:var(--ink);
+    max-width:65%;
+  }
+  header .sub{
+    font-size:13px;
+    font-weight:600;
+    color:var(--green-ink);
+    margin-top:8px;
+    letter-spacing:.02em;
+  }
+
+  /* ---------- Body sheet ---------- */
+  .sheet{
+    background:var(--card);
+    border-radius:26px 26px 0 0;
+    padding:22px 20px 0;
+    min-height:60vh;
+  }
+
+  /* ---------- Info cards ---------- */
+  .info-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .info-card{
+    flex:1;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:11px 13px;
+  }
+  .info-card .ic-label{
+    font-size:11px;
+    font-weight:800;
+    color:var(--green-ink);
+    letter-spacing:.02em;
+    margin-bottom:5px;
+  }
+  .info-card .ic-line{
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--ink);
+  }
+  .info-card a{
+    display:inline-block;
+    margin-top:5px;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1.5px solid var(--green-deep);
+  }
+
+  /* ---------- Attendance ---------- */
+  .attend{
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:14px 14px 12px;
+    margin-bottom:16px;
+  }
+  .attend-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .attend-head h2{
+    font-family:"Black Han Sans",sans-serif;
+    font-size:16px;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:.01em;
+  }
+  .attend-count{
+    font-size:12px;
+    font-weight:800;
+    color:var(--green-ink);
+  }
+  .attend-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+  }
+  .attend-chip{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 9px;
+    border-radius:9px;
+    border:1.3px solid var(--line);
+    background:var(--card);
+    cursor:pointer;
+    font-size:13px;
+    color:var(--ink-soft);
+    transition:all .15s ease;
+    user-select:none;
+  }
+  .attend-chip .box{
+    width:15px;height:15px;
+    border-radius:4px;
+    border:1.3px solid var(--ink);
+    flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;color:transparent;
+    background:var(--card);
+  }
+  .attend-chip.checked{
+    background:var(--green);
+    color:var(--ink);
+    font-weight:700;
+  }
+  .attend-chip.checked .box{
+    background:var(--ink);
+    color:var(--green);
+  }
+  .attend-note{
+    margin-top:9px;
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- Day tabs ---------- */
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:10px 4px;
+    border-radius:10px;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    color:var(--ink);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .tab.tab-day{
+    background:var(--green);
+    border:1.5px solid var(--green-deep);
+  }
+  .tab .d{font-size:10.5px;font-weight:600;display:block;color:var(--ink-soft);}
+  .tab .w{font-size:15px;font-weight:800;font-family:"Black Han Sans",sans-serif;}
+  .tab.tab-day .d{color:var(--green-ink);}
+  .tab.active{
+    background:var(--ink);
+    border-color:var(--ink);
+  }
+  .tab.active .d{color:var(--green);}
+  .tab.active .w{color:var(--green);}
+
+  /* ---------- Schedule label + rivets ---------- */
+  .sched-label{
+    font-family:"Black Han Sans",sans-serif;
+    font-size:15px;
+    letter-spacing:.02em;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .rivets{
+    display:flex;
+    justify-content:space-between;
+    padding:0 2px 10px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:16px;
+  }
+  .rivets span{
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--ink);
+    display:inline-block;
+  }
+
+  /* ---------- Timeline ---------- */
+  .day-panel{display:none;}
+  .day-panel.active{display:block;}
+  .day-summary{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .timeline{position:relative;padding-left:8px;}
+  .item{
+    position:relative;
+    display:flex;
+    gap:14px;
+    padding-bottom:26px;
+  }
+  .item:last-child{padding-bottom:6px;}
+  .rail{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:56px;
+    flex:none;
+  }
+  .badge{
+    border:1.6px solid var(--ink);
+    border-radius:20px;
+    background:var(--card);
+    font-size:10.5px;
+    font-weight:800;
+    color:var(--ink);
+    padding:4px 7px;
+    white-space:nowrap;
+    line-height:1.3;
+    text-align:center;
+  }
+  .rail-line{
+    flex:1;
+    width:0;
+    border-left:2px dotted var(--dash);
+    margin-top:4px;
+  }
+  .item:last-child .rail-line{display:none;}
+  .content{flex:1;padding-top:3px;}
+  .title{
+    font-size:15px;
+    font-weight:800;
+    color:var(--ink);
+    line-height:1.4;
+  }
+  .note{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:3px;
+    line-height:1.5;
+  }
+  .link-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:7px;
+  }
+  .link-group .link-chip{margin-top:0;}
+  .link-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    margin-top:7px;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--ink);
+    background:var(--green);
+    border:1.3px solid var(--ink);
+    padding:3px 10px;
+    border-radius:20px;
+    text-decoration:none;
+  }
+
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    padding:24px 20px 0;
+  }
+
+  /* ---------- 우리의 약속 ---------- */
+  .promise-card{
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:20px 18px;
+  }
+  .promise-title{
+    font-family:"Black Han Sans",sans-serif;
+    font-size:22px;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .promise-intro{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.7;
+    margin-bottom:18px;
+    padding-bottom:16px;
+    border-bottom:1.5px dashed var(--dash);
+  }
+  .promise-section{margin-bottom:20px;}
+  .promise-head{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    margin-bottom:9px;
+  }
+  .promise-num{
+    flex:none;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--green);
+    font-size:12px;
+    font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .promise-head h3{
+    margin:0;
+    font-size:15px;
+    font-weight:800;
+    color:var(--ink);
+    line-height:1.45;
+  }
+  .promise-list{
+    list-style:none;
+    margin:0;
+    padding:0 0 0 33px;
+  }
+  .promise-list li{
+    font-size:12.8px;
+    line-height:1.75;
+    color:var(--ink);
+    margin-bottom:9px;
+  }
+  .promise-list li::marker{content:none;}
+  .promise-list li b{
+    background:#FBD3E2;
+    padding:1px 3px;
+    border-radius:3px;
+    font-weight:700;
+  }
+  .promise-note{
+    background:var(--green);
+    border-radius:12px;
+    padding:14px 15px;
+    font-size:12px;
+    line-height:1.7;
+    color:var(--ink);
+    margin-top:6px;
+  }
+  .promise-note b{font-weight:800;}
+  .promise-signature{
+    text-align:right;
+    margin-top:16px;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .promise-signature b{
+    display:block;
+    color:var(--ink);
+    font-size:13px;
+  }
+
+  /* ---------- 플레이리스트 ---------- */
+  .playlist-card{
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:24px 20px;
+    text-align:center;
+  }
+  .playlist-art{
+    width:76px;height:76px;
+    margin:0 auto 16px;
+    border-radius:18px;
+    background:var(--green);
+    border:1.5px solid var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+  }
+  .playlist-card h3{
+    font-family:"Black Han Sans",sans-serif;
+    font-size:19px;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .playlist-card p{
+    font-size:12.8px;
+    color:var(--ink-soft);
+    line-height:1.7;
+    margin:0 0 20px;
+  }
+  .playlist-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--ink);
+    color:var(--green);
+    font-size:13.5px;
+    font-weight:800;
+    padding:12px 22px;
+    border-radius:24px;
+    text-decoration:none;
+  }
+  .playlist-hint{
+    margin-top:16px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="back">‹</div>
+    <div class="dday">
+      <span class="pill" id="ddayPill">D-DAY</span>
+      <div class="range">2026.7.10-7.12<br>(FRI·SUN)</div>
+    </div>
+    <h1>여름<br>들살이</h1>
+    <div class="sub">청년부 여름 수련회 · 강릉 &amp; 속초</div>
+  </header>
+
+  <div class="sheet">
+
+    <div class="info-row">
+      <div class="info-card">
+        <div class="ic-label">🚄 오고가는 열차</div>
+        <div class="ic-line">가는 길 · 서울역 12:11 → 강릉역 14:14</div>
+        <div class="ic-line">오는 길 · 강릉역 12:23 → 서울역 14:33</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-label">숙소</div>
+        <div class="ic-line">🏠 아라민박</div>
+        <a href="https://naver.me/GsBZto3U" target="_blank" rel="noopener">네이버 지도 →</a>
+      </div>
+    </div>
+
+    <div class="attend" id="attendCard">
+      <div class="attend-head">
+        <h2>출석 확인</h2>
+        <span class="attend-count" id="attendCount">0 / 8</span>
+      </div>
+      <div class="attend-grid" id="attendGrid"></div>
+      <div class="attend-note">이름을 탭하면 참석 여부가 모두에게 저장돼요.</div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="sched-label">SCHEDULE.</div>
+    <div class="rivets">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div id="panels"></div>
+
+    <footer>여름 들살이 · 활동 예정 및 기록 — 당일 상황에 따라 시간은 조정될 수 있어요</footer>
+  </div>
+</div>
+
+<script>
+/* D-day 뱃지 */
+(function(){
+  const target = new Date('2026-07-10T00:00:00');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.round((target - today) / 86400000);
+  const el = document.getElementById('ddayPill');
+  if(diff > 0) el.textContent = 'D-' + diff;
+  else if(diff === 0) el.textContent = 'D-DAY';
+  else el.textContent = 'D+' + Math.abs(diff);
+})();
+
+/* 출석 확인 */
+const NAMES = ['이홍','이은지','박지현','이지유','박재원','이정민','김채린','유영상'];
+let attendState = {};
+
+async function loadAttendance(){
+  try{
+    const res = await window.storage.get('attendance', true);
+    attendState = res && res.value ? JSON.parse(res.value) : {};
+  }catch(e){
+    attendState = {};
+  }
+  renderAttendance();
+}
+
+function renderAttendance(){
+  const grid = document.getElementById('attendGrid');
+  grid.innerHTML = NAMES.map(name=>{
+    const checked = !!attendState[name];
+    return `<div class="attend-chip ${checked?'checked':''}" data-name="${name}">
+      <span class="box">${checked?'✓':''}</span>${name}
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.attend-chip').forEach(chip=>{
+    chip.onclick = ()=> toggleAttendance(chip.dataset.name);
+  });
+  const count = NAMES.filter(n=>attendState[n]).length;
+  document.getElementById('attendCount').textContent = `${count} / ${NAMES.length}`;
+}
+
+async function toggleAttendance(name){
+  attendState[name] = !attendState[name];
+  renderAttendance();
+  try{
+    await window.storage.set('attendance', JSON.stringify(attendState), true);
+  }catch(e){
+    console.error('attendance save failed', e);
+  }
+}
+loadAttendance();
+
+/* 일정 데이터 */
+const DAYS = [
+  {
+    id:'fri', dLabel:'7월 10일', wLabel:'금',
+    summary:'서울 → 강릉 이동, 숙소 체크인, 영진 해변에서 첫 밤',
+    items:[
+      {t:'11:00', title:'서울역 집합'},
+      {t:'11:00', title:'점심 식사', note:'출발 전 미리 식사'},
+      {t:'12:00', title:'KTX 출발', note:'12:11 출발 · 서울역 → 강릉역', emoji:'🚄'},
+      {t:'13:00', title:'이동 중'},
+      {t:'14:00', title:'강릉역 도착', note:'14:14 도착'},
+      {t:'14:30', title:'차량 렌트 → 숙소 이동', note:'숙소 방 배정'},
+      {t:'15:00', title:'체크인', note:'🏠 아라민박', link:{label:'네이버 지도', url:'https://naver.me/GsBZto3U'}},
+      {t:'15:30', title:'휴식'},
+      {t:'16:30', title:'영진 해변 이동 · 영진 해변', link:{label:'영진 해변', url:'https://naver.me/IgMS64bb'}},
+      {t:'18:30', title:'영진 해변', note:'빵·잼 구매 — 빵을쇼핑하다 빵명가 치아바타', link:{label:'빵집 지도', url:'https://naver.me/5bCL9CoU'}},
+      {t:'(자유)', title:'근처 카페', note:'브라질', link:{label:'카페 지도', url:'https://naver.me/5dh7LAHT'}},
+      {t:'19:00', title:'저녁 식사', note:'배달 — 해미가수산 (회·추어탕)', link:{label:'식당 지도', url:'https://naver.me/xiL1RLiC'}},
+      {t:'20:00', title:'정리'},
+      {t:'20:30', title:'성서교육'},
+      {t:'22:00', title:'자유시간'},
+    ]
+  },
+  {
+    id:'sat', dLabel:'7월 11일', wLabel:'토',
+    summary:'속초 중앙시장 나들이, 경포 카페거리, 강문 해변 & 짝기도',
+    items:[
+      {t:'09:00', title:'기상'},
+      {t:'10:00', title:'아침 식사', note:'빵, 토스트'},
+      {t:'11:00', title:'시장으로 이동', link:{label:'중앙시장 지도', url:'https://naver.me/FtoKR06G'}},
+      {t:'12:00', title:'시장에서 식사', note:'속초중앙시장'},
+      {t:'13:00', title:'소품샵 둘러보기', links:[
+        {label:'삶은감자', url:'https://naver.me/5o0ZM7sC'},
+        {label:'오어즈', url:'https://naver.me/xAfDv1qm'},
+        {label:'유라유라', url:'https://naver.me/5AuVRQfs'},
+        {label:'한낮의 바다', url:'https://naver.me/FUifvMNw'},
+        {label:'사유의공간', url:'https://naver.me/FfsDIkf4'},
+        {label:'산소울', url:'https://naver.me/GVVTRxKr'},
+        {label:'두딩(푸딩)', url:'https://naver.me/GO6RJV6n'},
+      ]},
+      {t:'14:30', title:'카페로 이동'},
+      {t:'15:00', title:'카페', note:'테라로사 경포호수점 or 브라질', link:{label:'테라로사 지도', url:'https://naver.me/xeF1MV8Y'}},
+      {t:'16:00', title:'강문 해변으로 이동'},
+      {t:'16:30', title:'강문 해변', link:{label:'강문 해변 지도', url:'https://naver.me/Gqfunemi'}},
+      {t:'18:00', title:'초당순두부마을'},
+      {t:'19:00', title:'저녁 식사', note:'짬뽕'},
+      {t:'20:00', title:'숙소로 이동'},
+      {t:'20:30', title:'짝기도'},
+      {t:'22:00', title:'밤바다', note:'자유시간'},
+    ]
+  },
+  {
+    id:'sun', dLabel:'7월 12일', wLabel:'일',
+    summary:'아침 식사 후 정리, KTX로 서울 복귀',
+    items:[
+      {t:'기상', title:'기상'},
+      {t:'아침', title:'아침 식사', note:'강릉역 옹막', link:{label:'식당 지도', url:'https://naver.me/5l2VrHw4'}},
+      {t:'12:00', title:'KTX 출발', note:'12:23 출발 · 강릉역 → 서울역', emoji:'🚄'},
+      {t:'13:00', title:'이동 중'},
+      {t:'14:00', title:'서울역 도착', note:'14:33 도착'},
+      {t:'', title:'굿바이', note:'여름 들살이 마무리'},
+    ]
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const panelsEl = document.getElementById('panels');
+
+DAYS.forEach((day, i)=>{
+  const tab = document.createElement('button');
+  tab.className = 'tab tab-day' + (i===0?' active':'');
+  tab.dataset.id = day.id;
+  tab.innerHTML = `<span class="d">${day.dLabel}</span><span class="w">${day.wLabel}</span>`;
+  tab.onclick = ()=> selectDay(day.id);
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'day-panel' + (i===0?' active':'');
+  panel.dataset.id = day.id;
+
+  const itemsHtml = day.items.map(it => `
+    <div class="item">
+      <div class="rail">
+        <div class="badge">${it.t}</div>
+        <div class="rail-line"></div>
+      </div>
+      <div class="content">
+        <div class="title">${it.emoji ? it.emoji+' ' : ''}${it.title}</div>
+        ${it.note ? `<div class="note">${it.note}</div>` : ''}
+        ${it.link ? `<a class="link-chip" href="${it.link.url}" target="_blank" rel="noopener">📍 ${it.link.label}</a>` : ''}
+        ${it.links ? `<div class="link-group">${it.links.map(l=>`<a class="link-chip" href="${l.url}" target="_blank" rel="noopener">📍 ${l.label}</a>`).join('')}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  panel.innerHTML = `
+    <div class="day-summary">${day.summary}</div>
+    <div class="timeline">${itemsHtml}</div>
+  `;
+  panelsEl.appendChild(panel);
+});
+
+function selectDay(id){
+  document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('active', t.dataset.id===id));
+  document.querySelectorAll('.day-panel').forEach(p=> p.classList.toggle('active', p.dataset.id===id));
+}
+
+/* 우리의 약속 탭 */
+const promiseTab = document.createElement('button');
+promiseTab.className = 'tab';
+promiseTab.dataset.id = 'promise';
+promiseTab.innerHTML = `<span class="d">우리의</span><span class="w">약속</span>`;
+promiseTab.onclick = ()=> selectDay('promise');
+tabsEl.appendChild(promiseTab);
+
+const PROMISE_SECTIONS = [
+  {
+    head:'우리는 환대와 평등의 신앙 공동체입니다.',
+    items:[
+      '<b>다양한 신앙의 결을 존중하고 판단하지 않습니다.</b> 하나님 앞에서 우리 모두는 동등합니다. 우리 안에는 서로 다른 신앙관이 존재함을 인정합니다. 다름은 틀린 것이 아니기에, 타인의 신앙에 대해 함부로 충고하거나 비판할 권리는 누구에게도 없습니다. 있는 그대로의 신앙적 색깔을 존중하며 포용의 언어로 한 몸을 이룹니다.',
+      '<b>차별을 넘어선 사랑으로 연대합니다.</b> 성별, 인종, 장애, 성적 지향 등 소수자에 대한 고정관념이 담긴 차별적 언행을 하지 않습니다.',
+    ]
+  },
+  {
+    head:'우리는 권력과 기득권을 성찰하는 페미니즘적 사고를 지향합니다.',
+    items:[
+      '<b>숨은 권력과 기득권을 자각합니다.</b> 모든 관계에는 권력이 존재함을 자각합니다. 내가 스스로 인지하지 못하는 기득권이 있음을 늘 성찰하며, 본인이 가진 권력을 타인을 위해 내려놓았다는 일종의 선민의식이나 시혜적인 태도를 철저히 경계하고 지양합니다.',
+      '<b>돌봄은 평등하게 분배합니다.</b> 돌봄과 챙김의 노동을 특정 젠더에게 미루지 않습니다. 성역할 고정관념에서 벗어나 평등하게 역할을 분담하며 페미니즘적 사고를 항상 염두에 두고 행동합니다.',
+    ]
+  },
+  {
+    head:'우리는 서로를 존중하며 안전하게 소통합니다.',
+    items:[
+      '<b>질문에도 배려가 필요합니다.</b> 출신 학교, 직업, 연애 및 결혼 여부 등 상대가 먼저 말하지 않는 사적인 영역은 먼저 묻지 않습니다. 누군가에게는 실례이자 폭력이 될 수 있음을 인지합니다.',
+      '<b>개인의 경계를 지킵니다.</b> 사적인 친분이 충분히 쌓이지 않은 상태에서 무리한 개별 연락(카카오톡, 보이스톡, 전화, 텔레그램, 페이스북, 인스타그램 등)을 삼가며, 서로 합의된 매너타임을 반드시 지킵니다.',
+      '<b>신도회의 수련회에서는 술을 마시지 않습니다.</b> 모두가 안전한 교제에 집중할 수 있도록 배려합니다.',
+      '<b>안전한 나눔의 공간을 지킵니다.</b> 우리 내부에서 깊이 나눈 개인의 이야기나 고민은 당사자의 동의 없이 외부로 함부로 옮기지 않습니다.',
+    ]
+  },
+  {
+    head:'우리는 서로를 돌보며 함께 변화해 나갑니다.',
+    items:[
+      '<b>방관하지 않고 목소리를 냅니다.</b> 차별이나 폭력적인 상황을 목격했을 때, 당사자가 아니더라도 적극적으로 문제를 제기합니다. 내 옆의 교우가 모든 폭력에서 벗어나 자유로울 권리를 위해 함께 말하고 행동합니다.',
+      '<b>열린 마음으로 사과하고 성찰합니다.</b> 누군가 나의 언행에 대해 문제를 제기한다면, 방어하기보다 열린 마음으로 경청하고 진정성 있게 사과하는 용기를 가집니다.',
+      '<b>소진된 교우의 기댈 곳이 되어줍니다.</b> 삶과 신앙 속에서 신체적・정서적 소진이나 고민이 생겼을 때, 장벽 없이 털어놓고 의지할 수 있는 돌봄의 공동체를 만듭니다.',
+      '<b>지속적으로 배우고 대화합니다.</b> 성평등한 문화와 신앙적 뿌리내림을 위해 끊임없이 토론하고 학습합니다. 교회 공동체를 향한 굳건한 신뢰를 바탕으로 함께 변화하겠습니다.',
+    ]
+  },
+];
+
+const promisePanel = document.createElement('div');
+promisePanel.className = 'day-panel';
+promisePanel.dataset.id = 'promise';
+promisePanel.innerHTML = `
+  <div class="promise-card">
+    <div class="promise-title">우리의 약속</div>
+    <div class="promise-intro">향린의 청년들은 서로에게 향기로운 이웃이 되기 위해 다음과 같이 약속합니다.</div>
+    ${PROMISE_SECTIONS.map((s,i)=>`
+      <div class="promise-section">
+        <div class="promise-head">
+          <span class="promise-num">${i+1}</span>
+          <h3>${s.head}</h3>
+        </div>
+        <ul class="promise-list">
+          ${s.items.map(it=>`<li>${it}</li>`).join('')}
+        </ul>
+      </div>
+    `).join('')}
+    <div class="promise-note">
+      <b>※ 우리의 다짐</b><br>
+      이 약속문은 안전한 공동체를 지키기 위한 우리의 소중한 합의입니다. 이 내용을 희화화하거나 농담의 대상으로 삼지 않고, 언제나 진지하게 대할 것을 약속합니다.
+    </div>
+    <div class="promise-signature">
+      <b>2026. 03. 02</b>
+      향린교회 청년신도회
+    </div>
+  </div>
+`;
+panelsEl.appendChild(promisePanel);
+
+/* 플레이리스트 탭 */
+const playlistTab = document.createElement('button');
+playlistTab.className = 'tab';
+playlistTab.dataset.id = 'playlist';
+playlistTab.innerHTML = `<span class="d">다 같이</span><span class="w">노래</span>`;
+playlistTab.onclick = ()=> selectDay('playlist');
+tabsEl.appendChild(playlistTab);
+
+const playlistPanel = document.createElement('div');
+playlistPanel.className = 'day-panel';
+playlistPanel.dataset.id = 'playlist';
+playlistPanel.innerHTML = `
+  <div class="playlist-card">
+    <div class="playlist-art">🎵</div>
+    <h3>들살이 플레이리스트</h3>
+    <p>이동하는 차 안에서, 해변에서 다 같이 들을 노래를 자유롭게 추가해주세요.<br>누구든 링크로 들어와서 원하는 곡을 넣을 수 있어요.</p>
+    <a class="playlist-btn" href="https://music.apple.com/kr/playlist/pl.u-yZyVPb3sYkyMABP?a=join&it=x0GwZEjI6WQoZ0bC9qakm" target="_blank" rel="noopener">Apple Music에서 열기 →</a>
+    <div class="playlist-hint">Apple Music 앱이 있으면 자동으로 플레이리스트에 참여돼요.</div>
+  </div>
+`;
+panelsEl.appendChild(playlistPanel);
+</script>
+</body>
+</html>
